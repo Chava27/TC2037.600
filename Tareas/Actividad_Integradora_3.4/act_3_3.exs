@@ -4,9 +4,9 @@
 #
 # --------------------------------------------------List of REGEX used--------------------------------------------------
 # REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+" *(?=:)
-# REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)
-# REGEX for punctuation:(?=^) *[{},":\[\]]+
-# REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]
+# REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""
+# REGEX for punctuation:(?=^) *[{},:\[\]]+
+# REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+
 # REGEX for numbers:(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]
 
 
@@ -42,9 +42,9 @@ defmodule Syntax do
       #If token found is a key with the following two points
       Regex.match?(~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/, line) -> js_html(line, "k", result)
       #If token found is a string value
-      Regex.match?(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)/,line)-> js_html(line, "s", result)
+      Regex.match?(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""/,line)-> js_html(line, "s", result)
       #If token found is a reserved words
-      Regex.match?(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/, line) -> js_html(line, "r", result)
+      Regex.match?(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/, line) -> js_html(line, "r", result)
       #If token found is a number
       Regex.match?(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line) -> js_html(line, "n", result)
       true -> IO.puts "FAILED TO DETECT #{line}"
@@ -71,19 +71,19 @@ defmodule Syntax do
         #call function with new values
         token(String.replace(line,~r/(?=^) *[{},:\[\]]+/,""), Enum.join([result,html_text]))
       type == "s" ->
-        [token]=Regex.run(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)/, line)
+        [token]=Regex.run(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""/, line)
         IO.puts token
         #create html with the punctuation
         html_text= "<span class='string'>#{token}</span>"
         #call function with new values
-        token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""/,""),Enum.join([result,html_text]))
       type == "r" ->
-        [token]=Regex.run(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/, line)
+        [token]=Regex.run(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/, line)
         IO.puts token
         #create html with the punctuation
         html_text= "<span class='reserved-word'>#{token}</spann"
         #call function with new values
-        token(String.replace(line,~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/,""),Enum.join([result,html_text]))
       type == "n" ->
         [token]=Regex.run(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line)
         IO.puts token
