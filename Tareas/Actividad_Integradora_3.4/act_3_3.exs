@@ -13,14 +13,17 @@
 
 defmodule Syntax do
   def json_to_html(in_filename, out_filename) do
-    template = File.read("template.html")
+    template_1 = File.read("template_1.html")
+    template_2 = File.read("template_2.html")
     tokens =
       in_filename
       |> File.stream!() #genera lista de renglones
       |> Enum.map(&token/1)
       |> Enum.join("\n")
     IO.puts "FINISHED PROCCESING FILE"
-    File.write(out_filename,Enum.join([template,tokens]))
+    Enum.join(token,template_1)
+    Enum.join(template_2,template_1)
+    File.write(out_filename,template_1)
   end
 
   def token(line), do: token(String.replace(line,"\n",""),"")
