@@ -13,9 +13,9 @@
 
 defmodule Syntax do
   def json_to_html(in_filename, out_filename) do
-    d = DateTime.utc_now
+    d = Date.utc_today()
     template_1 = File.read!("template_1.html")
-    |> String.replace("\#\{datetime\}",DateTime.to_string(d))
+    |> String.replace("\#\{datetime\}",Date.to_string(d))
     template_2 = File.read!("template_2.html")
     tokens =
       in_filename
