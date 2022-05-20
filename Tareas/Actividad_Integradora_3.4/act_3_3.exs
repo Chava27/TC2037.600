@@ -3,7 +3,7 @@
 #
 #
 # --------------------------------------------------List of REGEX used--------------------------------------------------
-# REGEX for KEYS:(?=^) *"[\w0-9:-]+"(?=:)
+# REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+"(?=:)
 # REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)
 # REGEX for punctuation:(?=^) *[{},:\[\]]+
 # REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]
@@ -12,67 +12,79 @@
 
 
 defmodule Syntax do
-  def json_to_hmtl(in_filename, out_filename) do
+  def json_to_html(in_filename, out_filename) do
     template = File.read("template.html")
     tokens =
       in_filename
       |> File.stream!() #genera lista de renglones
       |> Enum.map(&token/1)
       |> Enum.join("\n")
-    File.write(out_filename,tokens)
+    IO.puts "FINISHED PROCCESING FILE"
+    File.write(out_filename,Enum.join([template,tokens]))
   end
 
-  def token(line), do: token(line,"")
-  defp token(line,result) when line == "", do: result
+  def token(line), do: token(String.replace(line,"\n",""),"")
+  defp token(line,result) when line == "" or line == "\n", do: result
   defp token(line, result) do
+    IO.puts "RESULT: #{result}"
+    IO.puts "new line: #{line}"
     cond do
       #If token is punctuation
       Regex.match?(~r/(?=^) *[{},:\[\]]+/, line) -> js_html(line, "p", result)
       #If token found is a key with the following two points
-      Regex.match?(~r/(?=^) *"[\w0-9:-]+"(?=:)/, line) -> js_html(line, "k", result)
+      Regex.match?(~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/, line) -> js_html(line, "k", result)
       #If token found is a string value
       Regex.match?(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,line)-> js_html(line, "s", result)
       #If token found is a reserved words
       Regex.match?(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/, line) -> js_html(line, "r", result)
       #If token found is a number
       Regex.match?(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line) -> js_html(line, "n", result)
+      true -> IO.puts "FAILED TO DETECT #{line}"
     end
   end
 
 
 
   def js_html(line, type, result) do
+    IO.puts type
     cond do
       type == "k" ->
-        [token]=Regex.run(~r/(?=^) *"[\w0-9:-]+"(?=:)/,line)
+        [token]=Regex.run(~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/,line)
+        IO.puts token
         #create html with the corresponding key and punctuation <span clas="object-key"{key}>
         html_text= "<span class='object-key'>#{token}</span>\n"
         #call function with new values
-        token(String.replace(line,~r/(?=^) *"[\w0-9:-]+"(?=:)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/,""),Enum.join([result,html_text]))
       type == "p" ->
         [token]=Regex.run(~r/(?=^) *[{},:\[\]]+/, line)
+        IO.puts token
         #create html with the punctuation
         html_text= "<span class='punctuation'>#{token}</span>\n"
         #call function with new values
-        token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,""), Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?=^) *[{},:\[\]]+/,""), Enum.join([result,html_text]))
       type == "s" ->
-        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        [token]=Regex.run(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/, line)
+        IO.puts token
         #create html with the punctuation
         html_text= "<span class='string'>#{token}</span>\n"
         #call function with new values
-        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,""),Enum.join([result,html_text]))
       type == "r" ->
-        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        [token]=Regex.run(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/, line)
+        IO.puts token
         #create html with the punctuation
         html_text= "<span class='reserved-word'>#{token}</span>\n"
         #call function with new values
-        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/,""),Enum.join([result,html_text]))
       type == "n" ->
-        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        [token]=Regex.run(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line)
+        IO.puts token
         #create html with the punctuation
         html_text= "<span class='number'>#{token}</span>\n"
         #call function with new values
-        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/,""),Enum.join([result,html_text]))
+
+      true -> IO.puts "Failed to detect token"
     end
   end
 end
