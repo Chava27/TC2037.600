@@ -1,16 +1,14 @@
-#Program that takes in a json files and returns an htm for syntax highlighting
+# Program that takes in a json files and returns an htm for syntax highlighting
 #
-#Value; ((?<=:) *[*"\(\)\;*[a-zA-z0-9.&': ?+!=\/.,-]+ *"]*)
 #
-# ("\w+" *:)                   "movie":
-# ((?<=:) *"[a-zA-z0-9.: ]+ *")     "Merian C. Cooper"
-# ( *"\w+" *)(:)((?<=:) *"[a-zA-z0-9.: ]+ *")(,)
-# ( *"\w+" *)(:)
-# REGEX for key: "movie":
-#"King Kong",
-# {,},[,],:,,
-# REGEX for symbols: ([{},:\[\]]+)
-# REGEX for first bracket: (?=^) *[{},:\[\]]
+#
+# --------------------------------------------------List of REGEX used--------------------------------------------------
+# REGEX for KEYS:(?=^) *"[\w0-9:-]+"(?=:)
+# REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)
+# REGEX for punctuation:(?=^) *[{},:\[\]]+
+# REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]
+# REGEX for numbers:(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]
+
 
 
 defmodule Syntax do
@@ -18,7 +16,7 @@ defmodule Syntax do
     template = File.read("template.html")
     tokens =
       in_filename
-      |> Enum.stream!() #genera lista de renglones
+      |> File.stream!() #genera lista de renglones
       |> Enum.map(&token/1)
       |> Enum.join("\n")
     File.write(out_filename,tokens)
@@ -28,38 +26,53 @@ defmodule Syntax do
   defp token(line,result) when line == "", do: result
   defp token(line, result) do
     cond do
-      Regex.match?(~r/ *"\w+" *(?=:)/, line) -> js_html(line, "k", result)
-      Regex.match?(~r/(?<=:) *"[a-zA-z0-9.: ]+ *"/,line)-> js_html(line, "s", result)
-      Regex.match?(~r/[{},:\[\]]+/, line) -> js_html(line, "p", result)
+      #If token is punctuation
+      Regex.match?(~r/(?=^) *[{},:\[\]]+/, line) -> js_html(line, "p", result)
+      #If token found is a key with the following two points
+      Regex.match?(~r/(?=^) *"[\w0-9:-]+"(?=:)/, line) -> js_html(line, "k", result)
+      #If token found is a string value
+      Regex.match?(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,line)-> js_html(line, "s", result)
+      #If token found is a reserved words
+      Regex.match?(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]/, line) -> js_html(line, "r", result)
+      #If token found is a number
+      Regex.match?(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line) -> js_html(line, "n", result)
     end
-
-
-    [key,dots,value,comma] = Regex.run
-    token()
-
-
-
-   # "<span class = \"token\"> #{name} <\span>"
-
   end
 
 
 
-  def js_html(line, type, result)
+  def js_html(line, type, result) do
     cond do
       type == "k" ->
-        [token,key,dot]=Regex.run(~r/( *"\w+" *(?=:))(:)/,line)
+        [token]=Regex.run(~r/(?=^) *"[\w0-9:-]+"(?=:)/,line)
         #create html with the corresponding key and punctuation <span clas="object-key"{key}>
-        #insert in html
-        #delete info from list
-        {trash,n_line}String.split_at(line,token)
-        token(n_line,result)
-
-      #key = "movie"
-      #dot = :
-      type == "p" -> [token]=Regex.run(~r/([{},:\[\]]+)/, line)
-      type == "v"
+        html_text= "<span class='object-key'>#{token}</span>\n"
+        #call function with new values
+        token(String.replace(line,~r/(?=^) *"[\w0-9:-]+"(?=:)/,""),Enum.join([result,html_text]))
+      type == "p" ->
+        [token]=Regex.run(~r/(?=^) *[{},:\[\]]+/, line)
+        #create html with the punctuation
+        html_text= "<span class='punctuation'>#{token}</span>\n"
+        #call function with new values
+        token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,""), Enum.join([result,html_text]))
+      type == "s" ->
+        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        #create html with the punctuation
+        html_text= "<span class='string'>#{token}</span>\n"
+        #call function with new values
+        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
+      type == "r" ->
+        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        #create html with the punctuation
+        html_text= "<span class='reserved-word'>#{token}</span>\n"
+        #call function with new values
+        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
+      type == "n" ->
+        [token]=Regex.run(~r/([{},:\[\]]+)/, line)
+        #create html with the punctuation
+        html_text= "<span class='number'>#{token}</span>\n"
+        #call function with new values
+        token(String.replace(line,~r/( *"\w+" *(?=:))(:)/,""),Enum.join([result,html_text]))
     end
-
-
   end
+end
