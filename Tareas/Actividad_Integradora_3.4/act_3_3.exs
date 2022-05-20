@@ -3,7 +3,7 @@
 #
 #
 # --------------------------------------------------List of REGEX used--------------------------------------------------
-# REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+"(?=:)
+# REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+" *(?=:)
 # REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)
 # REGEX for punctuation:(?=^) *[{},:\[\]]+
 # REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]
@@ -13,17 +13,22 @@
 
 defmodule Syntax do
   def json_to_html(in_filename, out_filename) do
-    template_1 = File.read("template_1.html")
-    template_2 = File.read("template_2.html")
+    d = DateTime.utc_now
+    template_1 = File.read!("template_1.html")
+    |> String.replace("\#\{datetime\}",DateTime.to_string(d))
+    template_2 = File.read!("template_2.html")
     tokens =
       in_filename
       |> File.stream!() #genera lista de renglones
       |> Enum.map(&token/1)
       |> Enum.join("\n")
     IO.puts "FINISHED PROCCESING FILE"
-    Enum.join(token,template_1)
-    Enum.join(template_2,template_1)
-    File.write(out_filename,template_1)
+    IO.puts(tokens)
+    IO.puts(template_1)
+    file1 = Enum.join([template_1,tokens])
+    file2 = Enum.join([file1,template_2])
+    IO.puts file2
+    File.write(out_filename,file2)
   end
 
   def token(line), do: token(String.replace(line,"\n",""),"")
@@ -35,7 +40,7 @@ defmodule Syntax do
       #If token is punctuation
       Regex.match?(~r/(?=^) *[{},:\[\]]+/, line) -> js_html(line, "p", result)
       #If token found is a key with the following two points
-      Regex.match?(~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/, line) -> js_html(line, "k", result)
+      Regex.match?(~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/, line) -> js_html(line, "k", result)
       #If token found is a string value
       Regex.match?(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]+"(?=,)/,line)-> js_html(line, "s", result)
       #If token found is a reserved words
@@ -52,12 +57,12 @@ defmodule Syntax do
     IO.puts type
     cond do
       type == "k" ->
-        [token]=Regex.run(~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/,line)
+        [token]=Regex.run(~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/,line)
         IO.puts token
         #create html with the corresponding key and punctuation <span clas="object-key"{key}>
         html_text= "<span class='object-key'>#{token}</span>"
         #call function with new values
-        token(String.replace(line,~r/(?=^)\t* *"[\w0-9:-]+"(?=:)/,""),Enum.join([result,html_text]))
+        token(String.replace(line,~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/,""),Enum.join([result,html_text]))
       type == "p" ->
         [token]=Regex.run(~r/(?=^) *[{},:\[\]]+/, line)
         IO.puts token
