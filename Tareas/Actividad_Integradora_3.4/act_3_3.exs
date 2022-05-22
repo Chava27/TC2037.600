@@ -1,7 +1,7 @@
 # Program that takes in a json files and returns an htm for syntax highlighting
-#
-#
-#
+# Actividad Integradora 3.4 Resaltador de sintaxis (evidencia de competencia)
+# Salvador Salgado Normandia
+# Luis Javier Karam Galland
 # --------------------------------------------------List of REGEX used--------------------------------------------------
 # REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+" *(?=:)
 # REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""
@@ -15,6 +15,7 @@ defmodule Syntax do
   def json_to_html(in_filename, out_filename) do
     d = Date.utc_today()
     template_1 = File.read!("template_1.html")
+    #Add date inside the html template
     |> String.replace("\#\{datetime\}",Date.to_string(d))
     template_2 = File.read!("template_2.html")
     tokens =
@@ -22,20 +23,16 @@ defmodule Syntax do
       |> File.stream!() #genera lista de renglones
       |> Enum.map(&token/1)
       |> Enum.join("\n")
-    IO.puts "FINISHED PROCCESING FILE"
-    IO.puts(tokens)
-    IO.puts(template_1)
+    #Once the html is created we join it whith our template_1 (beginning of html)
     file1 = Enum.join([template_1,tokens])
+    #Add end of html
     file2 = Enum.join([file1,template_2])
-    IO.puts file2
     File.write(out_filename,file2)
   end
 
   def token(line), do: token(String.replace(line,"\n",""),"")
   defp token(line,result) when line == "" or line == "\n", do: result
   defp token(line, result) do
-    IO.puts "RESULT: #{result}"
-    IO.puts "new line: #{line}"
     cond do
       #If token is punctuation
       Regex.match?(~r/(?=^) *[{},:\[\]]+/, line) -> js_html(line, "p", result)

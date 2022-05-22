@@ -1,0 +1,15 @@
+Actividad Integradora 3.4 Resaltador de sintaxis (evidencia de competencia)
+
+Salvador Salgado Normandia
+Luis Javier Karam Galland
+
+Para esta actividad integradora se nos dio la tarea de leer un archivo con un lenguaje de programación (JSON), el cual debiamos de ir leyendo línea por línea, identifando los distinos tokens e ir creando un archivo html que mostraria la información del archivo json. Antes de poder dar inicio al diseño del programa fue necesario definir las expresiones regulares para cada token que se estaran encontrando en la lectura del archivo.
+
+REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+" *(?=:)
+REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""
+REGEX for punctuation:(?=^) *[{},:\[\]]+
+REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+
+REGEX for numbers:(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]
+
+Estas expersiones regualres no sólo nos permiten identifcar cada token, sino que tambien nos permiten identificar aqeullos tokens que deben de estar al principio de la linea. Esto es impoartante ya que sin esta restricción el programa generaria el html en un orden incorrecto.
+
