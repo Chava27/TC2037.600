@@ -21,3 +21,7 @@ El siguiente paso consitió en definir la variable tokens dentro del cual se ira
 
 El úlitmo paso consiste en juntar tantos los template con la variable tokens para despúes insertarlos en el archivo out_filename.
 
+**Función token**
+
+Esta función recibe como parámetro una línea de texto la cual remplaza los los saltos de línea con "". Una vez hecho esta modificación se agrega un nuevo parametro result, el cual almacenará los string html que se irán generando por cada token dentro de line. Al momento que se identifique el token al inicio de la linea se llama a otra función js_html() que genera el html adecuado para el tipo de token. Finalemnte inserta este nuevo string a la variable results al mismo tiempo que borra ese token de la línea para inspeccionar el siguiente token.
+
