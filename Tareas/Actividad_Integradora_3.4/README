@@ -6,9 +6,13 @@ Luis Javier Karam Galland
 Para esta actividad integradora se nos dio la tarea de leer un archivo con un lenguaje de programación (JSON), el cual debiamos de ir leyendo línea por línea, identifando los distinos tokens e ir creando un archivo html que mostraria la información del archivo json. Antes de poder dar inicio al diseño del programa fue necesario definir las expresiones regulares para cada token que se estaran encontrando en la lectura del archivo.
 
 REGEX for KEYS:(?=^)\t* *"[\w0-9:-]+" *(?=:)
+
 REGEX for VALUES (String):(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""
+
 REGEX for punctuation:(?=^) *[{},:\[\]]+
+
 REGEX for reserved words:(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+
+
 REGEX for numbers:(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]
 
 Estas expersiones regualres no sólo nos permiten identifcar cada token, sino que tambien nos permiten identificar aqeullos tokens que deben de estar al principio de la linea. Esto es impoartante ya que sin esta restricción el programa generaria el html en un orden incorrecto.
@@ -24,4 +28,20 @@ El úlitmo paso consiste en juntar tantos los template con la variable tokens pa
 **Función token**
 
 Esta función recibe como parámetro una línea de texto la cual remplaza los los saltos de línea con "". Una vez hecho esta modificación se agrega un nuevo parametro result, el cual almacenará los string html que se irán generando por cada token dentro de line. Al momento que se identifique el token al inicio de la linea se llama a otra función js_html() que genera el html adecuado para el tipo de token. Finalemnte inserta este nuevo string a la variable results al mismo tiempo que borra ese token de la línea para inspeccionar el siguiente token.
+
+**Iniciar el programa**
+
+Para poder ejecutar el programa es necesario encontrarse en la carpeta Actvidad_Integradora_3.4 y ejecutar iex.bat act_3_3.exs.
+
+Una vez iniciado elixir se debe de especificar el nombre del defmodule seguido del la función json_to_html(), cuyos parametros consisten del archivo json donde se leerá la info el nombre del archivo que se va a crear. Una vez que el programa haya finalizado se generará un nuevo archivo html.
+
+**Ejecutar en terminal**
+
+![Ejecutar en terminal](/Tareas/Actividad_Integradora_3.4/Images/Terminal.jpg)
+
+**Archivo html**
+
+![Ejecutar en terminal](/Tareas/Actividad_Integradora_3.4/Images/html.jpg)
+
+![Ejecutar en terminal](/Tareas/Actividad_Integradora_3.4/Images/result.jpg)
 
