@@ -13,3 +13,11 @@ REGEX for numbers:(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]
 
 Estas expersiones regualres no sólo nos permiten identifcar cada token, sino que tambien nos permiten identificar aqeullos tokens que deben de estar al principio de la linea. Esto es impoartante ya que sin esta restricción el programa generaria el html en un orden incorrecto.
 
+Una vez que se identificaron las expresiones regulares para cada posible token dentro del lenuaje de json fue necesario comenzar con el programa. Dentro del módulo Syntax se estableció la función json_to_html(in_filename,out_filename), el cual recibe el archivo json que se va a leer al igual que el nombre del archivo que se va a crear. Es importante mencionar que para el caso out_filename debe de ser archivo .html, ya que de esta forma podrá usar el archivo css que le otorga un estilo visual.
+
+Dentro de esta función se declara una variable d que contiene el día actual en que se genera el código (uso de función Date.utc_today()). El siguiente paso consiste en hacer una copia del template_1.html en donde iremos agregando el html según los tokens encontrados. Una vez creado esta copia se le inserta el valor de "d" remplazando #datetime. Finalmente se crea una copia de la segunda parte del html template que cerrará el archivo final.
+
+El siguiente paso consitió en definir la variable tokens dentro del cual se ira obteniendo los strings HTML de cada token línea por línea. Para esto se utiliza File.stream!() para generar la lista de renglones del archivo para despúes utilizar Enum.map() que recibe nuestra función token para aplicarlos en cada renglón. Una vez que se ha ejectuado el programa juntamos todos los strings html con Enum.join("\n").
+
+El úlitmo paso consiste en juntar tantos los template con la variable tokens para despúes insertarlos en el archivo out_filename.
+
