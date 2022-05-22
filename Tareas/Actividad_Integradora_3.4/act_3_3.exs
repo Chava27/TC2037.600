@@ -51,39 +51,33 @@ defmodule Syntax do
 
 
   def js_html(line, type, result) do
-    IO.puts type
     cond do
       type == "k" ->
         [token]=Regex.run(~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/,line)
-        IO.puts token
         #create html with the corresponding key and punctuation <span clas="object-key"{key}>
         html_text= "<span class='object-key'>#{token}</span>"
         #call function with new values
         token(String.replace(line,~r/(?=^)\t* *"[\w0-9:-]+" *(?=:)/,""),Enum.join([result,html_text]))
       type == "p" ->
         [token]=Regex.run(~r/(?=^) *[{},:\[\]]+/, line)
-        IO.puts token
         #create html with the punctuation
         html_text= "<span class='punctuation'>#{token}</span>"
         #call function with new values
         token(String.replace(line,~r/(?=^) *[{},:\[\]]+/,""), Enum.join([result,html_text]))
       type == "s" ->
         [token]=Regex.run(~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""/, line)
-        IO.puts token
         #create html with the punctuation
         html_text= "<span class='string'>#{token}</span>"
         #call function with new values
         token(String.replace(line,~r/(?!.*:)(?=^) *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"| *"[\(\)\;a-zA-z0-9.&': ?@+!=\/.\*,-]*"(?=[,}\]]+)|""/,""),Enum.join([result,html_text]))
       type == "r" ->
         [token]=Regex.run(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/, line)
-        IO.puts token
         #create html with the punctuation
         html_text= "<span class='reserved-word'>#{token}</spann"
         #call function with new values
         token(String.replace(line,~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/,""),Enum.join([result,html_text]))
       type == "n" ->
         [token]=Regex.run(~r/(?=(?:[^"]*"[^"]*")*[^"]*\Z)(?=^) *[\d+E.-]/, line)
-        IO.puts token
         #create html with the punctuation
         html_text= "<span class='number'>#{token}</span>"
         #call function with new values
