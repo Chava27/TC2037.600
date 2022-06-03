@@ -108,5 +108,4 @@ defmodule Syntax do
     |> Kernel./(1_000_000)
     |> IO.inspect()
   end
-
 end
