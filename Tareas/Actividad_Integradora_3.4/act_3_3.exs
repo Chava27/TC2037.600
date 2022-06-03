@@ -86,4 +86,11 @@ defmodule Syntax do
       true -> IO.puts "Failed to detect token"
     end
   end
+
+  def multi_json_to_html(file_dir) do
+    IO.puts "Main thread START"
+    Path.wildcard("#{file_dir}/*.json")
+    |> Enum.map(&Task.start(fn -> json_to_html(&1, "#{&1}.html") end))
+    IO.puts "Main thread FINISH"
+  end
 end
