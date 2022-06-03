@@ -93,4 +93,20 @@ defmodule Syntax do
     |> Enum.map(&Task.start(fn -> json_to_html(&1, "#{&1}.html") end))
     IO.puts "Main thread FINISH"
   end
+
+  def single_json_to_html(file_dir) do
+    IO.puts "Main thread START"
+    Path.wildcard("#{file_dir}/*.json")
+    |> Enum.map(&json_to_html(&1, "#{&1}.html"))
+    IO.puts "Main thread FINISH"
+  end
+
+  def meassure_time(function) do
+    function
+    |> :timer.tc()
+    |> elem(0)
+    |> Kernel./(1_000_000)
+    |> IO.inspect()
+  end
+
 end
