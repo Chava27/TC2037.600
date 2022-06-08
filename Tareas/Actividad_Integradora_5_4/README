@@ -64,6 +64,7 @@ Al mismo tiempo se espera que obtengamos los tiempos de ejecución de ambos caso
 <p>Una vez, que medimos el tiempo de ejecucion de las dos versiones de nuestro programa, nos quedamos con las siguientes mediciones:
 - Funcion secuencial: 2.518 segundos
 - Funcion paralela: .0096 segundos
+
 Aunque los resultados varian dependiendo la velocidad de la maquina que se este usando, en todas se pudo ver un aumento muy considerable en la velocidad de ejecucion, en este caso se observo una aceleracion del 26229%, lo cual es extremadamente optimo en el caso de este programa.
 En este ejercicio se puede apreciar la utilidad de lanzar varios threads para resolver un problema, en nuestro caso, fue relativamente simple implementar la funcionalidad paralela en nuestro programa ya que el procesamiento de los files no dependian entre si, esto significa que independientemente del tamaño o tiempo de ejecucion necesario para un solo file no dependeria de su terminacion antes de empezar a procesar el siguiente, abriendo la oportunidad a usar la funcion Task.start de elixir que lanza un thread para procesar cada archivo con nuestra funcion.
 </p>
