@@ -69,4 +69,5 @@ Aunque los resultados varian dependiendo la velocidad de la maquina que se este 
 En este ejercicio se puede apreciar la utilidad de lanzar varios threads para resolver un problema, en nuestro caso, fue relativamente simple implementar la funcionalidad paralela en nuestro programa ya que el procesamiento de los files no dependian entre si, esto significa que independientemente del tamaño o tiempo de ejecucion necesario para un solo file no dependeria de su terminacion antes de empezar a procesar el siguiente, abriendo la oportunidad a usar la funcion Task.start de elixir que lanza un thread para procesar cada archivo con nuestra funcion.
 </p>
 
+<p>En nuestro caso todavia se puede apreciar una complejidad del programa de O(n), esto es ya que aunque fue reducido por un gran margen, el tiempo de ejecucion sigue aumentandose de manera lineal dependiendo el tamaño y cantidad de archivos que se ejecuten en el programa. </p>
 <h2></h2>
