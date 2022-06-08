@@ -13,8 +13,8 @@ defmodule PiSolve do
 
   def get_pi_par(limit, threads) do
     range = div(limit,threads)
-
+¡
   end
-  
+
 
 end

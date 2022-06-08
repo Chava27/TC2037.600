@@ -73,7 +73,7 @@ defmodule Syntax do
       type == "r" ->
         [token]=Regex.run(~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/, line)
         #create html with the punctuation
-        html_text= "<span class='reserved-word'>#{token}</spann"
+        html_text= "<span class='reserved-word'>#{token}</span>"
         #call function with new values
         token(String.replace(line,~r/(?!.*\d)(?=^)(?=(?:[^"]*"[^"]*")*[^"]*\Z) *[a-zA-Z]+/,""),Enum.join([result,html_text]))
       type == "n" ->
