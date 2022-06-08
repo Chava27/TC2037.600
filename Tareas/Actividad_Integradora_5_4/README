@@ -50,3 +50,14 @@ Una vez iniciado elixir se debe de especificar el nombre del defmodule seguido d
 
 ![Ejecutar en terminal](/Tareas/Actividad_Integradora_3.4/Images/result.jpg)
 
+<br>
+<h1>Extension -> Actividad Integradora 5.3 Resaltador de sintaxis paralelo</h1> 
+<br>
+
+<p>Una vez que se logro diseñar el programa resaltador de sintaxis de la Actividad 3.4 se nos dio a la tarea de modificarlo de tal manera que pudiese leer varios archivos .json de manera secuencial al igual que de manera paralela.
+
+Al mismo tiempo se espera que obtengamos los tiempos de ejecución de ambos casos para poder identificar aquel con mayor eficiencia.</p>
+
+<h2>Resaltador de sintaxis Sequencial</h2>
+
+<h2></h2>

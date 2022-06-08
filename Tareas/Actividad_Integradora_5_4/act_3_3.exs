@@ -86,7 +86,7 @@ defmodule Syntax do
       true -> IO.puts "Failed to detect token"
     end
   end
-
+#multi_json_to_html recibe como parametro la dirección de un directorio que contiene varios archivos json. Una vez 
   def multi_json_to_html(file_dir) do
     IO.puts "Main thread START"
     Path.wildcard("#{file_dir}/*.json")
