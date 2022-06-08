@@ -54,10 +54,18 @@ Una vez iniciado elixir se debe de especificar el nombre del defmodule seguido d
 <h1>Extension -> Actividad Integradora 5.3 Resaltador de sintaxis paralelo</h1> 
 <br>
 
+
+
 <p>Una vez que se logro diseñar el programa resaltador de sintaxis de la Actividad 3.4 se nos dio a la tarea de modificarlo de tal manera que pudiese leer varios archivos .json de manera secuencial al igual que de manera paralela.
 
 Al mismo tiempo se espera que obtengamos los tiempos de ejecución de ambos casos para poder identificar aquel con mayor eficiencia.</p>
 
-<h2>Resaltador de sintaxis Sequencial</h2>
+<h2>Resultados en los tiempos de ejecucion</h2>
+<p>Una vez, que medimos el tiempo de ejecucion de las dos versiones de nuestro programa, nos quedamos con las siguientes mediciones:
+- Funcion secuencial: 2.518 segundos
+- Funcion paralela: .0096 segundos
+Aunque los resultados varian dependiendo la velocidad de la maquina que se este usando, en todas se pudo ver un aumento muy considerable en la velocidad de ejecucion, en este caso se observo una aceleracion del 26229%, lo cual es extremadamente optimo en el caso de este programa.
+En este caso se puede apreciar la utilidad de lanzar varios threads para resolver un problema, en nuestro caso, fue relativamente simple implementar la funcionalidad paralela en nuestro programa ya que el procesamiento de los files no dependian entre si, esto significa que independientemente del tamaño o tiempo de ejecucion necesario para un solo file no dependeria de su terminacion antes de empezar a procesar el siguiente, abriendo la oportunidad a usar la funcion Task.start de elixir que lanza un thread para procesar cada archivo.
+</p>
 
 <h2></h2>
