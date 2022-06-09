@@ -82,8 +82,13 @@ Aunque los resultados varian dependiendo la velocidad de la maquina que se este 
 En este ejercicio se puede apreciar la utilidad de lanzar varios threads para resolver un problema, en nuestro caso, fue relativamente simple implementar la funcionalidad paralela en nuestro programa ya que el procesamiento de los files no dependian entre si, esto significa que independientemente del tamaño o tiempo de ejecucion necesario para un solo file no dependeria de su terminacion antes de empezar a procesar el siguiente, abriendo la oportunidad a usar la funcion Task.start de elixir que lanza un thread para procesar cada archivo con nuestra funcion.
 </p>
 
+<h2>Complejidad de algoritmos</h2><br>
+
 <p>En nuestro caso todavia  puede observar una complejidad del programa de O(n) en el caso de la funcion secuencial, en el caso de la funcion paralela se puede apreciar una complejidad del O(n/k), en donde n es el numero de archivos y k es el numero de threads lanzados, este depende mucho de la maquina usada ya que el procesamiento de los documentos sera mucho mas rapido dependiendo el numero de cores y velocidad de procesamiento.
 
 Al comparar estas complejidades se puede observar como el uso de threads puede disminuir el tiempo de ejecucion de un programa de manera considerable, esto significa que si se presenta la oportunidad de usar paralelismo en un proyecto siempre deberia ser implementada para reducir los tiempos de ejecucion y asi hacer el programa mucho mas eficiente.
 </p>
-<h2></h2>
+
+<h2>Implicaciones éticas</h2>
+<br>
+<p>Al momento de reflexionar acerca de las ventajas de utilizar multithreading para acelerar programas complejos llegamos a la conclusión de que ese aumento en eficacia conlleva un mayor consumo de energía. Esta necesidad exacerbada por obtener soluciones de manera rápida puede dar lugar a que cada vez más se utilicen una mayor cantidad de computadoras para resolver tan solo un programa de gran complejidad. Este aumento de procesamiento repercuta directamente en el consumo de energía, ya que esta red de multihreading necesita su propia cantidad de luz, por lo que el consumo de recursos aumenta de manera exponencial. En un mundo donde cada vez más se observa un desabasto de recursos resulta poco ético el direccionarlos para acelerar programas que de por si ya son lo suficientemente rápidos. Consideramos que antes de aprovechar el uso de programación en paralelo es necesario identificar si este aumento de velocidad es realmente necesario, como lo podría ser el simular una cierta proteína en el área de farmacéuticos o inclusive el determinar el aumento de CO2 en la atmosfera.</p>
