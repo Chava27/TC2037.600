@@ -78,8 +78,12 @@ Al mismo tiempo se espera que obtengamos los tiempos de ejecución de ambos caso
 
 <p>
 Aunque los resultados varian dependiendo la velocidad de la maquina que se este usando, en todas se pudo ver un aumento muy considerable en la velocidad de ejecucion, en este caso se observo una aceleracion del 26229%, lo cual es extremadamente optimo en el caso de este programa.
+
 En este ejercicio se puede apreciar la utilidad de lanzar varios threads para resolver un problema, en nuestro caso, fue relativamente simple implementar la funcionalidad paralela en nuestro programa ya que el procesamiento de los files no dependian entre si, esto significa que independientemente del tamaño o tiempo de ejecucion necesario para un solo file no dependeria de su terminacion antes de empezar a procesar el siguiente, abriendo la oportunidad a usar la funcion Task.start de elixir que lanza un thread para procesar cada archivo con nuestra funcion.
 </p>
 
-<p>En nuestro caso todavia se puede apreciar una complejidad del programa de O(n), esto es ya que aunque fue reducido por un gran margen, el tiempo de ejecucion sigue aumentandose de manera lineal dependiendo el tamaño y cantidad de archivos que se ejecuten en el programa. </p>
+<p>En nuestro caso todavia  puede observar una complejidad del programa de O(n) en el caso de la funcion secuencial, en el caso de la funcion paralela se puede apreciar una complejidad del O(n/k), en donde n es el numero de archivos y k es el numero de threads lanzados, este depende mucho de la maquina usada ya que el procesamiento de los documentos sera mucho mas rapido dependiendo el numero de cores y velocidad de procesamiento.
+
+Al comparar estas complejidades se puede observar como el uso de threads puede disminuir el tiempo de ejecucion de un programa de manera considerable, esto significa que si se presenta la oportunidad de usar paralelismo en un proyecto siempre deberia ser implementada para reducir los tiempos de ejecucion y asi hacer el programa mucho mas eficiente.
+</p>
 <h2></h2>
