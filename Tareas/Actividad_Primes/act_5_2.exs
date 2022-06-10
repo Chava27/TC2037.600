@@ -45,7 +45,19 @@ defmodule Hw.Primes do
     |> Enum.map(&Task.async(fn -> sum_primes(&1 - range + 1, &1) end))
     |> Enum.map(&Task.await/1)
     |> Enum.sum()
+    if residue != 0 do
     result + sum_primes(last_element, last_element + residue)
+    else
+      result
+    end
+  end
+
+  def meassure_time(function) do
+    function
+    |> :timer.tc()
+    |> elem(0)
+    |> Kernel./(1_000_000)
+    |> IO.inspect()
   end
 
   end
