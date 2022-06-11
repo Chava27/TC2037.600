@@ -34,14 +34,11 @@ defmodule Hw.Primes do
 
   def sum_primes_parallel(limit,threads) do
     range = div(limit, threads)
-    IO.inspect range
     residue = limit - range * threads
-    IO.inspect residue
     ranges = Enum.map(1..threads, fn x -> x*range end)
     last_element = List.last(ranges)
 
     result = ranges
-    |> IO.inspect
     |> Enum.map(&Task.async(fn -> sum_primes(&1 - range + 1, &1) end))
     |> Enum.map(&Task.await/1)
     |> Enum.sum()
@@ -58,6 +55,10 @@ defmodule Hw.Primes do
     |> elem(0)
     |> Kernel./(1_000_000)
     |> IO.inspect()
+  end
+
+  def main do
+    meassure_time(fn -> Hw.Primes.sum_primes_parallel(10000000) end)
   end
 
   end

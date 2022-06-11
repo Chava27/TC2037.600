@@ -1,0 +1,23 @@
+# Analisis de Tiempo y Speedup
+
+## Resultados:
+
+- 100 000:
+
+meassure_time(fn -> Hw.Primes.sum_primes(100000) end) = .0316 sec
+meassure_time(fn -> Hw.Primes.sum_primes_parallel(100000) end) = .01525 sec
+___
+- 1 000 000:
+
+meassure_time(fn -> Hw.Primes.sum_primes(1000000) end) = .4977 sec
+meassure_time(fn -> Hw.Primes.sum_primes_parallel(1000000) end) = .09134 sec
+___
+- 10 000 000:
+
+meassure_time(fn -> Hw.Primes.sum_primes(10000000) end) = 11.06 sec
+meassure_time(fn -> Hw.Primes.sum_primes_parallel(10000000) end) = 2.04 sec
+
+
+## Conclusion
+
+Aqui se puede observar claramente como el tiempo de ejecucion baja considerablemente una vez que se implementa el uso de varios cores, en el ejemplo mas extremo buscamos la suma de los numero del 1 al 10 000 000 en donde de manera normal, se tarda 11 segundos pero con el uso de cores solo se tarda 2.04 segundos.
